@@ -8,41 +8,41 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9 aMhXd13uQjoXtEKNosOWaZqXgel0g=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="../Icons/favicon.ico" type="image/x-icon"
   </head>
   <body>
-      <div class="options-cont">
-        <i class="fa-solid fa-bars"></i>
-      </div>
-      <div class="tools-cont scale-tools">
-        <img class="pencil" src="./Icons/Pencil.svg" alt="">
-        <img class="eraser" src="./Icons/Eraser.svg" alt="">
-        <img class="download" src="./Icons/Download.svg" alt="">
-        <img class="upload" src="./Icons/Upload.svg" alt="">
-        <img class="sticky" src="./Icons/StickyNote.svg" alt="">
-        <img class="redo" src="./Icons/Redo.svg" alt="">
-        <img class="undo" src="./Icons/Undo.svg" alt="">
-      </div>
+    <div class="options-cont">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+    <div class="tools-cont scale-tools">
+      <img class="pencil" src="../Icons/Pencil.svg" alt="" />
+      <img class="eraser" src="../Icons/Eraser.svg" alt="" />
+      <img class="download" src="../Icons/Download.svg" alt="" />
+      <img class="upload" src="../Icons/Upload.svg" alt="" />
+      <img class="sticky" src="../Icons/StickyNote.svg" alt="" />
+      <img class="redo" src="../Icons/Redo.svg" alt="" />
+      <img class="undo" src="../Icons/Undo.svg" alt="" />
+    </div>
 
-
-      <div class="pencil-tool-cont">
-          <div class="pencil-width-cont">
-              <input type="range" min="2" max="10" value="3" class="pencil-width">
-          </div>
-          <div class="pencil-color-cont">
-              <div class="black pencil-color"></div>
-              <div class="red pencil-color"></div>
-              <div class="blue pencil-color"></div>
-          </div>
+    <div class="pencil-tool-cont">
+      <div class="pencil-width-cont">
+        <input type="range" min="2" max="10" value="3" class="pencil-width" />
       </div>
-      <div class="eraser-tool-cont">
-        <input type="range" min="5" max="50" value="10"  class="eraser-width">
+      <div class="pencil-color-cont">
+        <div class="black pencil-color"></div>
+        <div class="red pencil-color"></div>
+        <div class="blue pencil-color"></div>
       </div>
-      <!-- <div class="sticky-cont">
+    </div>
+    <div class="eraser-tool-cont">
+      <input type="range" min="5" max="50" value="10" class="eraser-width" />
+    </div>
+    <!-- <div class="sticky-cont">
           <div class="header-cont">
               <div class="minimize"></div>
               <div class="remove"></div>
@@ -51,8 +51,16 @@
               <textarea ></textarea>
           </div>
       </div> -->
+    <canvas></canvas>
+    <script
+      src="https://cdn.socket.io/4.2.0/socket.io.min.js"
+      integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj"
+      crossorigin="anonymous"
+    ></script>
 
-      <canvas></canvas>
+    <script>
+      let socket = io.connect("http://localhost:5000");
+    </script>
     <script src="./script.js"></script>
     <script src="./canvas.js"></script>
   </body>

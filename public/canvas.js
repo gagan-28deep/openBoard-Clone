@@ -1,3 +1,5 @@
+const { Socket } = require("engine.io");
+
 let canvas = document.querySelector("canvas");
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
@@ -30,20 +32,36 @@ tool.lineWidth = penWidth;
 
 canvas.addEventListener("mousedown", (e) => {
   mouseDown = true;
-  beginPath({
+  // beginPath({
+  //   x: e.clientX,
+  //   y: e.clientY,
+   
+  // });
+
+  let data = {
     x: e.clientX,
     y: e.clientY,
-    color: eraserFlag ? eraserColor : penColor,
-    width: eraserFlag ? eraserWidth : penWidth,
-  });
+  }
+  socket.emit("beginPath" , data)
 });
 
 canvas.addEventListener("mousemove", (e) => {
   if (mouseDown)
-    drawStroke({
+  {
+    let data = {
       x: e.clientX,
       y: e.clientY,
-    });
+      color: eraserFlag ? eraserColor : penColor,
+      width: eraserFlag ? eraserWidth : penWidth,
+    }
+    socket.emit('drawStroke' , data)
+  }
+    // drawStroke({
+      // x: e.clientX,
+      // y: e.clientY,
+      // color: eraserFlag ? eraserColor : penColor,
+      // width: eraserFlag ? eraserWidth : penWidth,
+    // });
 });
 
 canvas.addEventListener("mouseup", (e) => {
@@ -62,7 +80,8 @@ undo.addEventListener("click", (e) => {
         trackValue: track,
         undoRedoTracker
     }
-    undoRedoCanvas(data)
+    // undoRedoCanvas(data)
+    socket.emit('redoUndo' , data)
 })
 redo.addEventListener("click", (e) => {
      // Track ++
@@ -72,7 +91,8 @@ redo.addEventListener("click", (e) => {
         trackValue: track,
         undoRedoTracker
     }
-    undoRedoCanvas(data)
+    // undoRedoCanvas(data)
+    socket.emit('redoUndo' , data)
 })
 function undoRedoCanvas(trackObj) {
     
@@ -134,3 +154,16 @@ download.addEventListener("click", (e) => {
   a.download = "board.jpg";
   a.click();
 });
+
+socket.on("beginPath" , (data)=>{
+  // data -> data from server
+  beginPath(data)
+})
+socket.on("drawStroke" , (data)=>{
+  // data -> data from server
+  drawStroke(data)
+})
+socket.on("redoUndo" , (data)=>{
+  // data -> data from server
+  undoRedoCanvas(data)
+})
