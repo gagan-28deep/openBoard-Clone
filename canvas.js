@@ -6,6 +6,13 @@ let pencilColor = document.querySelectorAll(".pencil-color");
 let pencilWidthElem = document.querySelector(".pencil-width");
 let eraserWidthElem = document.querySelector(".eraser-width");
 
+let undo = document.querySelector(".undo");
+let redo = document.querySelector(".redo");
+
+let download = document.querySelector(".download");
+
+let undoRedoTracker = []; // Data
+let track = 0; // Represent which action from Tracker to take
 
 let penColor = "red";
 let eraserColor = "white";
@@ -15,19 +22,6 @@ let eraserWidth = pencilWidthElem.value;
 let mouseDown = false;
 // API
 let tool = canvas.getContext("2d");
-
-// tool.strokeStyle = 'blue'
-// tool.lineWidth = '6'
-// tool.beginPath(10,10)  //  new graphic (path) (line)
-// tool.moveTo(100,10)  // start point
-// tool.lineTo(100,100)  // end point
-// tool.stroke() // fill color or fill graphic
-
-// tool.beginPath() // for the new line
-// tool.strokeStyle = 'red'
-// tool.moveTo(10,10)
-// tool.lineTo(100,180)
-// tool.stroke()
 
 tool.strokeStyle = penColor;
 tool.lineWidth = penWidth;
@@ -39,6 +33,8 @@ canvas.addEventListener("mousedown", (e) => {
   beginPath({
     x: e.clientX,
     y: e.clientY,
+    color: eraserFlag ? eraserColor : penColor,
+    width: eraserFlag ? eraserWidth : penWidth,
   });
 });
 
@@ -52,13 +48,53 @@ canvas.addEventListener("mousemove", (e) => {
 
 canvas.addEventListener("mouseup", (e) => {
   mouseDown = false;
+
+  let url = canvas.toDataURL();
+  undoRedoTracker.push(url);
+  track = undoRedoTracker.length - 1;
 });
+
+undo.addEventListener("click", (e) => {
+    // Track -- 
+    if (track > 0) track--;
+    // track action
+    let data = {
+        trackValue: track,
+        undoRedoTracker
+    }
+    undoRedoCanvas(data)
+})
+redo.addEventListener("click", (e) => {
+     // Track ++
+    if (track < undoRedoTracker.length-1) track++;
+    // track action
+    let data = {
+        trackValue: track,
+        undoRedoTracker
+    }
+    undoRedoCanvas(data)
+})
+function undoRedoCanvas(trackObj) {
+    
+    track = trackObj.trackValue;
+    undoRedoTracker = trackObj.undoRedoTracker;
+
+    let url = undoRedoTracker[track];
+    let img = new Image(); // new image reference element
+    img.src = url;
+    img.onload = (e) => {
+        tool.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
+}
+
 function beginPath(strokeObje) {
   tool.beginPath();
   tool.moveTo(strokeObje.x, strokeObje.y);
 }
 
 function drawStroke(strokeObje) {
+  tool.strokeStyle = strokeObje.color;
+  tool.lineWidth = strokeObje.width;
   tool.lineTo(strokeObje.x, strokeObje.y);
   tool.stroke();
 }
@@ -80,13 +116,21 @@ eraserWidthElem.addEventListener("change", (e) => {
   tool.lineWidth = eraserWidth;
 });
 
-eraser.addEventListener('click' , (e)=>{
-    if(eraserFlag){
-        tool.strokeStyle = eraserColor
-        tool.lineWidth = eraserWidth
-    }
-    else{
-        tool.strokeStyle = penColor
-        tool.lineWidth = penWidth
-    }
-})
+eraser.addEventListener("click", (e) => {
+  if (eraserFlag) {
+    tool.strokeStyle = eraserColor;
+    tool.lineWidth = eraserWidth;
+  } else {
+    tool.strokeStyle = penColor;
+    tool.lineWidth = penWidth;
+  }
+});
+download.addEventListener("click", (e) => {
+  let url = canvas.toDataURL();
+
+  // To download
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "board.jpg";
+  a.click();
+});
