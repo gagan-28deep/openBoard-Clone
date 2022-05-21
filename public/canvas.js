@@ -1,5 +1,3 @@
-const { Socket } = require("engine.io");
-
 let canvas = document.querySelector("canvas");
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
@@ -7,6 +5,7 @@ canvas.width = window.innerWidth;
 let pencilColor = document.querySelectorAll(".pencil-color");
 let pencilWidthElem = document.querySelector(".pencil-width");
 let eraserWidthElem = document.querySelector(".eraser-width");
+
 
 let undo = document.querySelector(".undo");
 let redo = document.querySelector(".redo");
@@ -22,6 +21,9 @@ let penWidth = pencilWidthElem.value;
 let eraserWidth = pencilWidthElem.value;
 
 let mouseDown = false;
+
+
+
 // API
 let tool = canvas.getContext("2d");
 
@@ -32,36 +34,24 @@ tool.lineWidth = penWidth;
 
 canvas.addEventListener("mousedown", (e) => {
   mouseDown = true;
-  // beginPath({
-  //   x: e.clientX,
-  //   y: e.clientY,
-   
-  // });
-
-  let data = {
+  beginPath({
     x: e.clientX,
     y: e.clientY,
-  }
-  socket.emit("beginPath" , data)
+   
+  });
 });
 
 canvas.addEventListener("mousemove", (e) => {
   if (mouseDown)
   {
-    let data = {
+   
+    drawStroke({
       x: e.clientX,
       y: e.clientY,
       color: eraserFlag ? eraserColor : penColor,
       width: eraserFlag ? eraserWidth : penWidth,
-    }
-    socket.emit('drawStroke' , data)
+    });
   }
-    // drawStroke({
-      // x: e.clientX,
-      // y: e.clientY,
-      // color: eraserFlag ? eraserColor : penColor,
-      // width: eraserFlag ? eraserWidth : penWidth,
-    // });
 });
 
 canvas.addEventListener("mouseup", (e) => {
@@ -80,8 +70,7 @@ undo.addEventListener("click", (e) => {
         trackValue: track,
         undoRedoTracker
     }
-    // undoRedoCanvas(data)
-    socket.emit('redoUndo' , data)
+    undoRedoCanvas(data)
 })
 redo.addEventListener("click", (e) => {
      // Track ++
@@ -91,8 +80,7 @@ redo.addEventListener("click", (e) => {
         trackValue: track,
         undoRedoTracker
     }
-    // undoRedoCanvas(data)
-    socket.emit('redoUndo' , data)
+    undoRedoCanvas(data)
 })
 function undoRedoCanvas(trackObj) {
     
@@ -154,16 +142,3 @@ download.addEventListener("click", (e) => {
   a.download = "board.jpg";
   a.click();
 });
-
-socket.on("beginPath" , (data)=>{
-  // data -> data from server
-  beginPath(data)
-})
-socket.on("drawStroke" , (data)=>{
-  // data -> data from server
-  drawStroke(data)
-})
-socket.on("redoUndo" , (data)=>{
-  // data -> data from server
-  undoRedoCanvas(data)
-})
