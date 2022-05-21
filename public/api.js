@@ -1,4 +1,4 @@
-const  socket  = require("socket.io");
+// const  { socket }  = require("socket.io");
 
 let canvas = document.querySelector("canvas");
 canvas.height = window.innerHeight;
@@ -64,8 +64,8 @@ canvas.addEventListener("mousemove", (e) => {
     //   color: eraserFlag ? eraserColor : penColor,
     //   width: eraserFlag ? eraserWidth : penWidth,
     // });
+    socket.emit('drawStroke' , data)
   }
-  socket.emit('drawStroke' , data)
 });
 
 canvas.addEventListener("mouseup", (e) => {
